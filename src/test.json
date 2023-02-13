@@ -1,0 +1,132 @@
+{
+  "path": {
+    "start": {
+      "identity": { "low": 433, "high": 0 },
+      "labels": ["Node", "As"],
+      "properties": {
+        "organ": "small intestine",
+        "name": "submucosa",
+        "id": { "low": 14, "high": 0 },
+        "type": "AS"
+      },
+      "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:433"
+    },
+    "end": {
+      "identity": { "low": 553, "high": 0 },
+      "labels": ["Node", "Bm"],
+      "properties": {
+        "organ": "small intestine",
+        "name": "CD56",
+        "id": { "low": 134, "high": 0 },
+        "type": "BM"
+      },
+      "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:553"
+    },
+    "segments": [
+      {
+        "start": {
+          "identity": { "low": 433, "high": 0 },
+          "labels": ["Node", "As"],
+          "properties": {
+            "organ": "small intestine",
+            "name": "submucosa",
+            "id": { "low": 14, "high": 0 },
+            "type": "AS"
+          },
+          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:433"
+        },
+        "relationship": {
+          "identity": { "low": 584, "high": 0 },
+          "start": { "low": 437, "high": 0 },
+          "end": { "low": 433, "high": 0 },
+          "type": "is_part_of",
+          "properties": {},
+          "elementId": "5:501c73d2-9748-48ba-a775-c5af6ad8660c:584",
+          "startNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437",
+          "endNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:433"
+        },
+        "end": {
+          "identity": { "low": 437, "high": 0 },
+          "labels": ["Node", "As"],
+          "properties": {
+            "organ": "small intestine",
+            "name": "submucosal plexus of Meissner submucosal plexus (Meissners plexus, plexus of the submucosa, plexus submucosus)",
+            "id": { "low": 18, "high": 0 },
+            "type": "AS"
+          },
+          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437"
+        }
+      },
+      {
+        "start": {
+          "identity": { "low": 437, "high": 0 },
+          "labels": ["Node", "As"],
+          "properties": {
+            "organ": "small intestine",
+            "name": "submucosal plexus of Meissner submucosal plexus (Meissners plexus, plexus of the submucosa, plexus submucosus)",
+            "id": { "low": 18, "high": 0 },
+            "type": "AS"
+          },
+          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437"
+        },
+        "relationship": {
+          "identity": { "low": 662, "high": 0 },
+          "start": { "low": 501, "high": 0 },
+          "end": { "low": 437, "high": 0 },
+          "type": "is_part_of",
+          "properties": {},
+          "elementId": "5:501c73d2-9748-48ba-a775-c5af6ad8660c:662",
+          "startNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501",
+          "endNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437"
+        },
+        "end": {
+          "identity": { "low": 501, "high": 0 },
+          "labels": ["Node", "Ct"],
+          "properties": {
+            "organ": "small intestine",
+            "name": "nerve",
+            "id": { "low": 82, "high": 0 },
+            "type": "CT"
+          },
+          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501"
+        }
+      },
+      {
+        "start": {
+          "identity": { "low": 501, "high": 0 },
+          "labels": ["Node", "Ct"],
+          "properties": {
+            "organ": "small intestine",
+            "name": "nerve",
+            "id": { "low": 82, "high": 0 },
+            "type": "CT"
+          },
+          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501"
+        },
+        "relationship": {
+          "identity": { "low": 723, "high": 0 },
+          "start": { "low": 553, "high": 0 },
+          "end": { "low": 501, "high": 0 },
+          "type": "is_part_of",
+          "properties": {},
+          "elementId": "5:501c73d2-9748-48ba-a775-c5af6ad8660c:723",
+          "startNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:553",
+          "endNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501"
+        },
+        "end": {
+          "identity": { "low": 553, "high": 0 },
+          "labels": ["Node", "Bm"],
+          "properties": {
+            "organ": "small intestine",
+            "name": "CD56",
+            "id": { "low": 134, "high": 0 },
+            "type": "BM"
+          },
+          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:553"
+        }
+      }
+    ],
+    "length": 3
+  },
+  "hops": { "low": 3, "high": 0 }
+}

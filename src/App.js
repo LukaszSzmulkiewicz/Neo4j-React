@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 const neo4j = require('neo4j-driver');
 const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "luki1234"));
 const session = driver.session();
 
-const driverHubmap = neo4j.driver("neo4j+s://72c50183.databases.neo4j.io", neo4j.auth.basic("neo4j", "vKKN946zNvwGKx-wMU2l6jhUiOLeUpBxReFNFMIKxqY"));
+const driverHubmap = neo4j.driver("neo4j+s://d6ef9cdc.databases.neo4j.io", neo4j.auth.basic("neo4j", "woi9UqQga7vxsJI6T1-RRpPBRGXfS1DFwuI1NloU2uQ"));
 const sessionHubmap = driverHubmap.session();
 
 const parseResult = (result) => {
+  console.log("passing to parse result", result)
   const parsedData = [];
   result.records.forEach((record) => {
     const n = record.get('n');
@@ -17,9 +18,12 @@ const parseResult = (result) => {
       parsedData.push({ 
         nodeType1: n.labels[1], 
         name: n.properties.name, 
+        ontology_id1: n.properties.ontology_id,
         relationship: r ? r.type : null, 
         nodeType2: m.labels[1], 
-        name2: m ? m.properties.name : null });
+        name2: m ? m.properties.name : null,
+        ontology_id2: m.properties.ontology_id, 
+      });
     }
   });
   return parsedData;
@@ -41,6 +45,23 @@ const parseResultHubmap = (result) => {
   });
   return parsedData;
 };
+
+const parseResultHubCtBm = (result) => {
+  const parsedData = [];
+  console.log("Hubmup result pre processed",result)
+  result.records.forEach((record) => {
+    const row = record.get('result');
+    
+    if (row) {
+      parsedData.push({ 
+        name: row.properties.name,
+        type: row.properties.type 
+        });
+    }
+  });
+  return parsedData;
+};
+
 
 const getData = async (start, end, selectedPart) => {
   const query = `
@@ -64,45 +85,77 @@ const getDataHubmap = async (selectedOption, selectedPart, array) => {
   console.log("unfiltered data", array);
   const setOfRegions = new Set(array.map(function(item) {
 
-    if (item.nodeType1 === "Region") {
-      return item.name1;
+    if (item.ontology_id1) {
+      return item.ontology_id1;
     } 
-    if (item.nodeType2 === "Region"){
-      return item.name2;
-    }
+    if (item.ontology_id2) {
+      return item.ontology_id2;
+    } 
     return null;
     
   }));
-  setOfRegions.forEach(item => { selectedOption.forEach(option =>{
+  if (selectedOption.length > 0){
 
-    console.log("checking item in forEach", item)
-    if (item) {
-      filteredData.push({name1: item, name2: option, organ: selectedPart});
-    }
-  })
-  });
+    setOfRegions.forEach(item => { selectedOption.forEach(option =>{
+  
+      console.log("checking item in forEach", item)
+      if (item) {
+        filteredData.push({name1: item, name2: option, organ: selectedPart});
+      }
+    })
+    });
+  }else {
+    setOfRegions.forEach(item => {
+      if (item) {
+        filteredData.push({name1: item, organ: selectedPart});
+      }
+    })
+  }
   console.log("filtered data", filteredData);
   const nodesString = filteredData.map(node => `{name1: ".*${node.name1}.*", name2: "${node.name2}", organ: "${node.organ}"}`).join(', ');
   console.log("hubmap data", nodesString);
-  const query = `
-      WITH [${nodesString}] AS nodes 
-      UNWIND nodes AS node
-      WITH node, properties(node) as props
-      MATCH (p {name: props.name2, organ: props.organ}) -[*]->(b {organ: props.organ})
-      Where b.name=~node.name1
-      CALL apoc.path.expandConfig(p, {
-          relationshipFilter: "<is_part_of"
-          
-      })
-      YIELD path
-      RETURN path, length(path) AS hops
-      ORDER BY hops;
-  
-  `;
+  let query = ""
+  if(selectedOption.length> 0){
+    query = `
+       WITH [${nodesString}] AS nodes 
+       UNWIND nodes AS node
+       WITH node, properties(node) as props
+       MATCH (p {name: props.name2, organ: props.organ}) -[*]->(b {organ: props.organ})
+       Where b.ontology_id=~node.name1
+       CALL apoc.path.expandConfig(p, {
+           relationshipFilter: "<is_part_of"
+           
+       })
+       YIELD path
+       WHERE last(nodes(path)).type = "BM" or last(nodes(path)).type = "CT"
+       RETURN last(nodes(path)) as result
+       Order by result.type
+   
+   `;
+    
+  } else {
+    query = `   
+    WITH [${nodesString}] AS nodes 
+    UNWIND nodes AS node
+    WITH node, properties(node) as props
+    MATCH (p)
+    Where p.ontology_id=~node.name1
+    CALL apoc.path.expandConfig(p, {
+        relationshipFilter: "<is_part_of"
+        
+    })
+    YIELD path
+    WHERE last(nodes(path)).type = "BM" or last(nodes(path)).type = "CT"
+    RETURN last(nodes(path)) as result
+    Order by result.type
+
+`;
+  }
 
   const result = await sessionHubmap.run(query);
  
-  return parseResultHubmap(result);
+  // return parseResultHubmap(result);
+  return parseResultHubCtBm(result);
 };
 
 function App() {
@@ -134,7 +187,8 @@ const array = [
       console.log("printing result", result)    
       const resultHubmap = await getDataHubmap(selectedOptions,selectedOrgan, result);
       console.log("query result from the hubmap",resultHubmap.length)
-      setDataHubmap(resultHubmap);
+      console.log("processed hubmap query", dataHubmap)
+     await setDataHubmap(resultHubmap);
   };
 
   // if(data.length>0 && dataHubmap.length > 0){
@@ -169,7 +223,7 @@ const array = [
       />
       <label>Small intestine (Distance: 0 - 4250)</label>
       <br />
-      <h2>Select option:</h2>
+      <h2>Search for a specific layer:</h2>
       <div>
         <input
           type="checkbox"
@@ -208,13 +262,27 @@ const array = [
           ))}
         </ul>
         <br/>
-        <h1>HUBMAP result</h1>
-        <ul>
-          {" "}
+        <div>
+      <h1>HUBMAP result</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>CT</th>
+            <th>BM</th>
+          </tr>
+        </thead>
+        <tbody>
+          
           {dataHubmap.map((record, index) => (
-            <li key={index}> {JSON.stringify(record)} </li>
-          ))}{" "}
-        </ul>{" "}
+            <tr key={index}>
+              <td>{record.type ==="CT" ? record.name : ""}</td>
+              <td>{record.type ==="BM" ? record.name: ""}</td>
+             
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
       </header>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 const neo4j = require('neo4j-driver');
 const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "luki1234"));
 const session = driver.session();
@@ -30,6 +30,58 @@ const parseResult = (result) => {
 };
 
 const parseResultHubmap = (result) => {
+  const parsedData = [];
+  console.log("Hubmup result pre processed",result)
+  result.records.forEach((record) => {
+    const path = record.get('path');
+    
+    if (path.end.properties.type ==="BM" || path.end.properties.type ==="CT") {
+      const segments = [path.segments];
+      const connectedSegments = [];
+      if(segments[0].length > 1){
+        const consolidatedSegments = segments.reduce((result, segment) => {
+          let segmentTemp = [segment]
+           result = '(start) is connected to: ';
+          for (let i = 0; i < segmentTemp[0].length; i++) {
+            if(i+1 === segmentTemp[0].length){
+              result += segmentTemp[0][i].end.properties.name
+            }else{
+              result += segmentTemp[0][i].end.properties.name + " - is connected to: ";
+            }
+          }
+      
+          return result;
+        }, "");
+        connectedSegments.push(consolidatedSegments);
+      }
+   
+      parsedData.push({ 
+        start: path.start.properties.name, 
+        ontology_id: path.start.properties.ontology_id,
+        type: path.end.properties.type,
+        end: path.end.properties.name, 
+        path: connectedSegments.length > 0 ? connectedSegments : "direct link"
+      });
+     
+    }
+  });
+  console.log("parsed humbap result", parsedData)
+  parsedData.sort((a, b) => {
+    if (a.ontology_id === b.ontology_id) {
+      return (a.type > b.type) ? 1 : -1;
+    }
+    return (a.ontology_id > b.ontology_id) ? 1 : -1;
+  });
+    // Count the occurrences by type
+  const counts = parsedData.reduce((acc, curr) => {
+    acc[curr.type] = (acc[curr.type] || 0) + 1;
+    return acc;
+  }, {});
+  console.log("counts of hubmup data", counts)
+  return parsedData;
+};
+
+const parseResultHubmap1 = (result) => {
   const parsedData = [];
   console.log("Hubmup result pre processed",result)
   result.records.forEach((record) => {
@@ -123,15 +175,12 @@ const getDataHubmap = async (selectedOption, selectedPart, array) => {
        MATCH (p {name: props.name2, organ: props.organ}) -[*]->(b {organ: props.organ})
        Where b.ontology_id=~node.name1
        CALL apoc.path.expandConfig(p, {
-           relationshipFilter: "<is_part_of"
-           
-       })
-       YIELD path
-       WHERE last(nodes(path)).type = "BM" or last(nodes(path)).type = "CT"
-       RETURN last(nodes(path)) as result
-       Order by result.type
-   
-   `;
+        relationshipFilter: "<is_part_of"
+        })
+        YIELD path
+        RETURN path, length(path) AS hops
+        ORDER BY hops;
+      `;
     
   } else {
     query = `   
@@ -141,21 +190,18 @@ const getDataHubmap = async (selectedOption, selectedPart, array) => {
     MATCH (p)
     Where p.ontology_id=~node.name1
     CALL apoc.path.expandConfig(p, {
-        relationshipFilter: "<is_part_of"
-        
+      relationshipFilter: "<is_part_of"
     })
     YIELD path
-    WHERE last(nodes(path)).type = "BM" or last(nodes(path)).type = "CT"
-    RETURN last(nodes(path)) as result
-    Order by result.type
+    RETURN path, length(path) AS hops
+    ORDER BY hops;
 
 `;
   }
 
   const result = await sessionHubmap.run(query);
  
-  // return parseResultHubmap(result);
-  return parseResultHubCtBm(result);
+  return parseResultHubmap(result);
 };
 
 function App() {
@@ -262,27 +308,14 @@ const array = [
           ))}
         </ul>
         <br/>
-        <div>
+        
       <h1>HUBMAP result</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>CT</th>
-            <th>BM</th>
-          </tr>
-        </thead>
-        <tbody>
-          
+      <ul>
+          {" "}
           {dataHubmap.map((record, index) => (
-            <tr key={index}>
-              <td>{record.type ==="CT" ? record.name : ""}</td>
-              <td>{record.type ==="BM" ? record.name: ""}</td>
-             
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+            <li key={index}> {JSON.stringify(record)} </li>
+          ))}{" "}
+        </ul>{" "}
       </header>
     </div>
   );

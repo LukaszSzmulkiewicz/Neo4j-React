@@ -1,132 +1,211 @@
 {
-  "path": {
-    "start": {
-      "identity": { "low": 433, "high": 0 },
-      "labels": ["Node", "As"],
-      "properties": {
-        "organ": "small intestine",
-        "name": "submucosa",
-        "id": { "low": 14, "high": 0 },
-        "type": "AS"
-      },
-      "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:433"
-    },
-    "end": {
-      "identity": { "low": 553, "high": 0 },
-      "labels": ["Node", "Bm"],
-      "properties": {
-        "organ": "small intestine",
-        "name": "CD56",
-        "id": { "low": 134, "high": 0 },
-        "type": "BM"
-      },
-      "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:553"
-    },
-    "segments": [
-      {
-        "start": {
-          "identity": { "low": 433, "high": 0 },
-          "labels": ["Node", "As"],
-          "properties": {
-            "organ": "small intestine",
-            "name": "submucosa",
-            "id": { "low": 14, "high": 0 },
-            "type": "AS"
-          },
-          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:433"
-        },
-        "relationship": {
-          "identity": { "low": 584, "high": 0 },
-          "start": { "low": 437, "high": 0 },
-          "end": { "low": 433, "high": 0 },
-          "type": "is_part_of",
-          "properties": {},
-          "elementId": "5:501c73d2-9748-48ba-a775-c5af6ad8660c:584",
-          "startNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437",
-          "endNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:433"
-        },
-        "end": {
-          "identity": { "low": 437, "high": 0 },
-          "labels": ["Node", "As"],
-          "properties": {
-            "organ": "small intestine",
-            "name": "submucosal plexus of Meissner submucosal plexus (Meissners plexus, plexus of the submucosa, plexus submucosus)",
-            "id": { "low": 18, "high": 0 },
-            "type": "AS"
-          },
-          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437"
-        }
-      },
-      {
-        "start": {
-          "identity": { "low": 437, "high": 0 },
-          "labels": ["Node", "As"],
-          "properties": {
-            "organ": "small intestine",
-            "name": "submucosal plexus of Meissner submucosal plexus (Meissners plexus, plexus of the submucosa, plexus submucosus)",
-            "id": { "low": 18, "high": 0 },
-            "type": "AS"
-          },
-          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437"
-        },
-        "relationship": {
-          "identity": { "low": 662, "high": 0 },
-          "start": { "low": 501, "high": 0 },
-          "end": { "low": 437, "high": 0 },
-          "type": "is_part_of",
-          "properties": {},
-          "elementId": "5:501c73d2-9748-48ba-a775-c5af6ad8660c:662",
-          "startNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501",
-          "endNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:437"
-        },
-        "end": {
-          "identity": { "low": 501, "high": 0 },
-          "labels": ["Node", "Ct"],
-          "properties": {
-            "organ": "small intestine",
-            "name": "nerve",
-            "id": { "low": 82, "high": 0 },
-            "type": "CT"
-          },
-          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501"
-        }
-      },
-      {
-        "start": {
-          "identity": { "low": 501, "high": 0 },
-          "labels": ["Node", "Ct"],
-          "properties": {
-            "organ": "small intestine",
-            "name": "nerve",
-            "id": { "low": 82, "high": 0 },
-            "type": "CT"
-          },
-          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501"
-        },
-        "relationship": {
-          "identity": { "low": 723, "high": 0 },
-          "start": { "low": 553, "high": 0 },
-          "end": { "low": 501, "high": 0 },
-          "type": "is_part_of",
-          "properties": {},
-          "elementId": "5:501c73d2-9748-48ba-a775-c5af6ad8660c:723",
-          "startNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:553",
-          "endNodeElementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:501"
-        },
-        "end": {
-          "identity": { "low": 553, "high": 0 },
-          "labels": ["Node", "Bm"],
-          "properties": {
-            "organ": "small intestine",
-            "name": "CD56",
-            "id": { "low": 134, "high": 0 },
-            "type": "BM"
-          },
-          "elementId": "4:501c73d2-9748-48ba-a775-c5af6ad8660c:553"
-        }
-      }
+  "start": {
+    "identity": 271,
+    "labels": [
+      "Node",
+      "As"
     ],
-    "length": 3
+    "properties": {
+      "ontology_id": "UBERON:0001245",
+      "organ": "large intestine",
+      "name": "anus",
+      "id": 271,
+      "type": "AS"
+    },
+    "elementId": "271"
   },
-  "hops": { "low": 3, "high": 0 }
+  "end": {
+    "identity": 418,
+    "labels": [
+      "Node",
+      "Bm"
+    ],
+    "properties": {
+      "ontology_id": "HGNC:2770",
+      "organ": "large intestine",
+      "name": "DES",
+      "id": 418,
+      "type": "BM"
+    },
+    "elementId": "418"
+  },
+  "segments": [
+    {
+      "start": {
+        "identity": 271,
+        "labels": [
+          "Node",
+          "As"
+        ],
+        "properties": {
+          "ontology_id": "UBERON:0001245",
+          "organ": "large intestine",
+          "name": "anus",
+          "id": 271,
+          "type": "AS"
+        },
+        "elementId": "271"
+      },
+      "relationship": {
+        "identity": 281,
+        "start": 282,
+        "end": 271,
+        "type": "is_part_of",
+        "properties": {
+
+        },
+        "elementId": "281",
+        "startNodeElementId": "282",
+        "endNodeElementId": "271"
+      },
+      "end": {
+        "identity": 282,
+        "labels": [
+          "Node",
+          "As"
+        ],
+        "properties": {
+          "ontology_id": "UBERON:0002190",
+          "organ": "large intestine",
+          "name": "subcutaneous",
+          "id": 282,
+          "type": "AS"
+        },
+        "elementId": "282"
+      }
+    },
+    {
+      "start": {
+        "identity": 282,
+        "labels": [
+          "Node",
+          "As"
+        ],
+        "properties": {
+          "ontology_id": "UBERON:0002190",
+          "organ": "large intestine",
+          "name": "subcutaneous",
+          "id": 282,
+          "type": "AS"
+        },
+        "elementId": "282"
+      },
+      "relationship": {
+        "identity": 286,
+        "start": 287,
+        "end": 282,
+        "type": "is_part_of",
+        "properties": {
+
+        },
+        "elementId": "286",
+        "startNodeElementId": "287",
+        "endNodeElementId": "282"
+      },
+      "end": {
+        "identity": 287,
+        "labels": [
+          "Node",
+          "As"
+        ],
+        "properties": {
+          "ontology_id": "UBERON:0001367",
+          "organ": "large intestine",
+          "name": "external anal sphincter",
+          "id": 287,
+          "type": "AS"
+        },
+        "elementId": "287"
+      }
+    },
+    {
+      "start": {
+        "identity": 287,
+        "labels": [
+          "Node",
+          "As"
+        ],
+        "properties": {
+          "ontology_id": "UBERON:0001367",
+          "organ": "large intestine",
+          "name": "external anal sphincter",
+          "id": 287,
+          "type": "AS"
+        },
+        "elementId": "287"
+      },
+      "relationship": {
+        "identity": 406,
+        "start": 342,
+        "end": 287,
+        "type": "is_part_of",
+        "properties": {
+
+        },
+        "elementId": "406",
+        "startNodeElementId": "342",
+        "endNodeElementId": "287"
+      },
+      "end": {
+        "identity": 342,
+        "labels": [
+          "Node",
+          "Ct"
+        ],
+        "properties": {
+          "organ": "large intestine",
+          "ontology_id": "CL:0000188",
+          "name": "skeletal muscle",
+          "id": 342,
+          "type": "CT"
+        },
+        "elementId": "342"
+      }
+    },
+    {
+      "start": {
+        "identity": 342,
+        "labels": [
+          "Node",
+          "Ct"
+        ],
+        "properties": {
+          "organ": "large intestine",
+          "ontology_id": "CL:0000188",
+          "name": "skeletal muscle",
+          "id": 342,
+          "type": "CT"
+        },
+        "elementId": "342"
+      },
+      "relationship": {
+        "identity": 566,
+        "start": 418,
+        "end": 342,
+        "type": "is_part_of",
+        "properties": {
+
+        },
+        "elementId": "566",
+        "startNodeElementId": "418",
+        "endNodeElementId": "342"
+      },
+      "end": {
+        "identity": 418,
+        "labels": [
+          "Node",
+          "Bm"
+        ],
+        "properties": {
+          "ontology_id": "HGNC:2770",
+          "organ": "large intestine",
+          "name": "DES",
+          "id": 418,
+          "type": "BM"
+        },
+        "elementId": "418"
+      }
+    }
+  ],
+  "length": 4.0
 }

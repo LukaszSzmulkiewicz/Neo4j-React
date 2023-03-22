@@ -1,13 +1,167 @@
 body {
   margin: 0;
+  
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+
+}
+.main-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+.table-striped {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #0490f6; /* set the border and border color */
+  border-radius: 5px;
+}
+
+th {
+  background-color: #0490f6; /* set the header background color */
+  color: white;
+  text-align: middle;
+  padding: 8px;
+  border: 1px;
+}
+
+.tr-gca:nth-child(even), .tr-hub:nth-child(even) {
+  background-color: #f2f2f2; /* set the background color for even rows */
+}
+
+.td-gca {
+  padding: 8px;
+  border: 1px solid #a3a2a2; /* set the border and border color for cells */
+  text-align: center;
+
+}
+
+td {
+  padding: 8px;
+
+}
+
+.tbody-hub {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+}
+.tr-hub{
+  border: 1px solid #a3a2a2;
+}
+.tr-hub-first {
+  display: flex;
+  justify-content: flex-start;
+
+}
+.tr-first-wrapper {
+  border-bottom: 1px solid #a3a2a2;
+  flex: 1;
+  
+
+}
+.td-heading {
+  background-color: #0490f6; /* set the header background color */
+  color: white;
+  text-align: middle;
+  padding: 8px;
+  border: 1px;
+}
+
+.EGCA-table-container{
+  width: 1200px;
+}
+
+.Hub-table-container{
+  width: 1500px;
+}
+
+/* Menu box container */
+.menu-box {
+  display: flex;
+  width: 900px;
+  height: 400px;   
+  flex-direction: column;
+  align-items: center; /* add this to align items in the middle */
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid #0490f6;  
+}
+
+/* Input boxes */
+.menu-box input[type="number"],
+.menu-box input[type="text"], /* add this to align text inputs in the middle */
+.menu-box input[type="email"] { /* add this to align email inputs in the middle */
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  text-align: center; /* add this to align text in the middle */
+}
+
+/* Radio buttons */
+.menu-box input[type="radio"] {
+  margin-right: 5px; /* reduce the margin to make space for the label */
+}
+
+/* Tickboxes */
+.menu-box input[type="checkbox"] {
+  margin-right: 5px; /* reduce the margin to make space for the label */
+}
+
+
+
+
+/* Submit button */
+button{
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #1c2c6b;
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0b57f1;
+}
+
+.row-container {
+  display: flex;
+  padding: 20px;
+  margin: 20px;
+  flex-direction: row; /* set the flex direction to row */
+  justify-content: space-between; /* distribute items evenly with space in between */
+  align-items: center; /* vertically center the items */
+  border: 1px solid #0490f6;  
+  border-radius: 5px;
+
+
+}
+
+.row-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+form {
+  width: 100%;
 }

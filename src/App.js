@@ -47,12 +47,7 @@ const parseResultHubmap = (result) => {
   console.log("Hubmup result pre processed", result);
   result.records.forEach((record) => {
     const path = record.get("path");
-    console.log("path for parsing hubmap", path.end.properties.type)
 
-    if (
-      path.end.properties.type === "BM" ||
-      path.end.properties.type === "CT"
-    ) {
       const segments = [path.segments];
       const connectedSegments = [];
       if (segments[0].length > 1) {
@@ -82,7 +77,6 @@ const parseResultHubmap = (result) => {
         ontology_id_end: path.end.properties.ontology_id,
         path: connectedSegments.length > 0 ? connectedSegments : "direct link",
       });
-    }
   });
   console.log("parsed humbap result", parsedData);
   parsedData.sort((a, b) => {
@@ -100,38 +94,7 @@ const parseResultHubmap = (result) => {
   return parsedData;
 };
 
-const parseResultHubmap1 = (result) => {
-  const parsedData = [];
-  console.log("Hubmup result pre processed", result);
-  result.records.forEach((record) => {
-    const path = record.get("path");
-    const hops = record.get("hops");
 
-    if (path) {
-      parsedData.push({
-        path: path,
-        hops: hops,
-      });
-    }
-  });
-  return parsedData;
-};
-
-const parseResultHubCtBm = (result) => {
-  const parsedData = [];
-  console.log("Hubmup result pre processed", result);
-  result.records.forEach((record) => {
-    const row = record.get("result");
-
-    if (row) {
-      parsedData.push({
-        name: row.properties.name,
-        type: row.properties.type,
-      });
-    }
-  });
-  return parsedData;
-};
 
 const getData = async (start, end, selectedPart) => {
   const query = `
@@ -151,18 +114,23 @@ const getData = async (start, end, selectedPart) => {
 
 const getDataHubmap = async (selectedOption, selectedPart, array) => {
   const filteredData = [];
+  const filteredArray = [];
   console.log("unfiltered data", array);
-  const setOfRegions = new Set(
-    array.map(function (item) {
-      if (item.ontology_id1) {
-        return item.ontology_id1;
+  for(let i = 0; i < array.length; i++){
+     console.log("in the loop", array[i])
+      if(array[i].ontology_id1){
+
+        filteredArray.push(array[i].ontology_id1)
+    }
+    if(array[i].ontology_id2){
+
+      filteredArray.push(array[i].ontology_id2)
+  }
       }
-      if (item.ontology_id2) {
-        return item.ontology_id2;
-      }
-      return null;
-    })
-  );
+
+      console.log("filtered array", filteredArray)
+  const setOfRegions = new Set(filteredArray);
+  console.log("unfiltered data set", setOfRegions);
   if (selectedOption.length > 0) {
     setOfRegions.forEach((item) => {
       selectedOption.forEach((option) => {
@@ -187,7 +155,7 @@ const getDataHubmap = async (selectedOption, selectedPart, array) => {
   const nodesString = filteredData
     .map(
       (node) =>
-        `{name1: ".*${node.name1}.*", name2: "${node.name2}", organ: "${node.organ}"}`
+        `{name1: ".*${node.name1}.*", name2: ".*${node.name2}.*", organ: "${node.organ}"}`
     )
     .join(", ");
   console.log("hubmap data", nodesString);
@@ -197,9 +165,9 @@ const getDataHubmap = async (selectedOption, selectedPart, array) => {
        WITH [${nodesString}] AS nodes 
        UNWIND nodes AS node
        WITH node, properties(node) as props
-       MATCH (p {name: props.name2, organ: props.organ}) -[*]->(b {organ: props.organ})
-       Where b.ontology_id=~node.name1
-       CALL apoc.path.expandConfig(p, {
+       MATCH (p { organ: props.organ})<-[is_part_of*]-(b {organ: props.organ})
+       Where p.ontology_id=~node.name1 and b.name=~node.name2
+       CALL apoc.path.expandConfig(b, {
         relationshipFilter: "<is_part_of"
         })
         YIELD path
@@ -211,7 +179,7 @@ const getDataHubmap = async (selectedOption, selectedPart, array) => {
     WITH [${nodesString}] AS nodes 
     UNWIND nodes AS node
     WITH node, properties(node) as props
-    MATCH (p)
+    MATCH (p{ organ: props.organ})
     Where p.ontology_id=~node.name1
     CALL apoc.path.expandConfig(p, {
       relationshipFilter: "<is_part_of"
@@ -341,8 +309,8 @@ function App() {
                 <div class="row-item">
                   <input
                     type="checkbox"
-                    value="submucosa"
-                    checked={selectedOptions.includes("submucosa")}
+                    value="muscularis"
+                    checked={selectedOptions.includes("muscularis")}
                     onChange={handleOptionChange}
                   />
                   <label>Muscularis</label>
@@ -350,12 +318,13 @@ function App() {
                 <div class="row-item">
                   <input
                     type="checkbox"
-                    value="muscularis"
-                    checked={selectedOptions.includes("muscularis")}
+                    value="submucosa"
+                    checked={selectedOptions.includes("submucosa")}
                     onChange={handleOptionChange}
                   />
-                  <label>Submucosa</label>
+                   <label>Submucosa</label>
                 </div>
+            
                 <div class="row-item">
                   <input
                     type="checkbox"
@@ -451,5 +420,37 @@ function App() {
     </div>
   );
 }
+const parseResultHubmap1 = (result) => {
+  const parsedData = [];
+  console.log("Hubmup result pre processed", result);
+  result.records.forEach((record) => {
+    const path = record.get("path");
+    const hops = record.get("hops");
+
+    if (path) {
+      parsedData.push({
+        path: path,
+        hops: hops,
+      });
+    }
+  });
+  return parsedData;
+};
+
+const parseResultHubCtBm = (result) => {
+  const parsedData = [];
+  console.log("Hubmup result pre processed", result);
+  result.records.forEach((record) => {
+    const row = record.get("result");
+
+    if (row) {
+      parsedData.push({
+        name: row.properties.name,
+        type: row.properties.type,
+      });
+    }
+  });
+  return parsedData;
+};
 
 export default App;

@@ -1,10 +1,11 @@
 import { useState } from "react";
 
+// neo4j driver 
 const HGCA_DB_NAME = "neo4j";
 const HGCA_PASSWORD = "neoapp123";
 
 const HuBMAP_DB_NAME = "neo4j";
-const HuBMAP_PASSWORD = "woi9UqQga7vxsJI6T1-RRpPBRGXfS1DFwuI1NloU2uQ";
+const HuBMAP_PASSWORD = "";
 
 const neo4j = require("neo4j-driver");
 const driver = neo4j.driver(
@@ -14,7 +15,7 @@ const driver = neo4j.driver(
 const session = driver.session();
 
 const driverHubmap = neo4j.driver(
-  "neo4j+s://d6ef9cdc.databases.neo4j.io",
+  "neo4j+s://"...".databases.neo4j.io",
   neo4j.auth.basic(HuBMAP_DB_NAME, HuBMAP_PASSWORD)
 );
 const sessionHubmap = driverHubmap.session();
@@ -29,21 +30,27 @@ const parseResult = (result) => {
 
     if (n && n.properties) {
       parsedData.push({
-        nodeType1: n.labels[1],
+        nodeType1: n.labels,
         name: n.properties.name,
         ontology_id1: n.properties.ontology_id,
         relationship: r ? r.type : null,
-        nodeType2: m? m.labels[1] : null,
+        nodeType2: m? m.labels : null,
         name2: m ? m.properties.name : null,
-        ontology_id2: m.properties.ontology_id,
+        ontology_id2: m ? m.properties.ontology_id : null,
       });
     }
   });
+  console.log("parsed result", parsedData)
   return parsedData;
 };
 
 const parseResultHubmap = (result) => {
   const parsedData = [];
+
+  // sets for result testing 
+  let as = new Set();
+  let bm = new Set();
+  let ct = new Set();
   console.log("Hubmup result pre processed", result);
   result.records.forEach((record) => {
     const path = record.get("path");
@@ -53,6 +60,8 @@ const parseResultHubmap = (result) => {
       if (segments[0].length > 1) {
         const consolidatedSegments = segments.reduce((result, segment) => {
           let segmentTemp = [segment];
+          let nodeType;
+
           result = `(start node)  <-is_part_of-: `;
           for (let i = 0; i < segmentTemp[0].length; i++) {
             if (i + 1 === segmentTemp[0].length) {
@@ -60,13 +69,35 @@ const parseResultHubmap = (result) => {
             } else {
               result +=
                 segmentTemp[0][i].end.properties.name + " <-is_part_of-: ";
+
             }
           }
-
+          
+          
           return result;
         }, "");
         connectedSegments.push(consolidatedSegments);
+        
       }
+      const startType = path.start.properties.type
+      const startName = path.start.properties.name
+      const endType =  path.end.properties.type
+      const endName = path.end.properties.name
+      if (startType === "AS" && !as.has(startName)) {
+        as.add(startName);
+      } else if (endType === "AS" && !as.has(endName)) {
+        as.add(endName);
+      } else if (startType === "CT" && !ct.has(startName)) {
+        ct.add(startName);
+      } else if (endType === "CT" && !ct.has(endName)) {
+        ct.add(endName);
+      } else if (startType === "BM" && !bm.has(startName)) {
+        bm.add(startName);
+      } else if (endType === "BM" && !bm.has(endName)) {
+        bm.add(endName);
+      }
+
+
 
       parsedData.push({
         start: path.start.properties.name,
@@ -77,7 +108,14 @@ const parseResultHubmap = (result) => {
         ontology_id_end: path.end.properties.ontology_id,
         path: connectedSegments.length > 0 ? connectedSegments : "direct link",
       });
-  });
+    });
+    // console log for testing of HuBMAP result
+    console.log("as - size", as.size);
+    console.log("as", [...as].join(', '));
+    console.log("bm - size", bm.size);
+    console.log("bm", [...bm].join(', '));
+    console.log("as - size", ct.size);
+    console.log("ct", [...ct].join(', '));
   console.log("parsed humbap result", parsedData);
   parsedData.sort((a, b) => {
     if (a.ontology_id === b.ontology_id) {
@@ -354,7 +392,7 @@ function App() {
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th class="th-gca">Landmark</th>
+                {data.length === 1 ? <th class="th-gca">Region</th> : <th class="th-gca">Landmark</th>}
                   <th class="th-gca">Ontology ID</th>
                   <th class="th-gca">Relationship</th>
                   <th class="th-gca">Region</th>
@@ -367,7 +405,7 @@ function App() {
                     <tr class="tr-gca" key={index}>
                       <td class="td-gca">{record.name}</td>
                       <td class="td-gca">{record.ontology_id1}</td>
-                      <td class="td-gca">{`:-Landmark-For->`}</td>
+                      {data.length === 1 ? <td class="td-gca"></td> :<td class="td-gca">{`:-Landmark-For->`}</td> }
                       <td class="td-gca">
                         {record.nodeType2 ? ` ${record.name2}` : ""}
                       </td>
@@ -394,13 +432,13 @@ function App() {
 
                       <tr class="tr-hub-first">
                         <div class ="tr-first-wrapper">
-                        <td class="td-heading"><b>First Node: </b></td>
+                        <td class="td-heading"><b>Start Node: </b></td>
                         <td><b>Name:</b> {record.start}</td>
                         <td><b>Type: </b>{record.start_type}</td>
                         <td><b>Ontology ID: </b>{record.ontology_id}</td>
                         </div>
                         <div class ="tr-first-wrapper">
-                        <td class="td-heading"><b>Last Node: </b></td>
+                        <td class="td-heading"><b>End Node: </b></td>
                         <td><b>Name:</b> {record.end}</td>
                         <td><b>Type: </b>{record.end_type}</td>
                         <td><b>Ontology ID: </b>{record.ontology_id_end}</td>
